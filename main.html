@@ -285,13 +285,74 @@
             ]
         };
 
-        // 游戏状态中添加当前角色文件夹
+        // 玩具配置
+        const TOY_CONFIG = {
+            PATTERNS: {
+                'gag': { intensity: 15, duration: 1000 },
+                'handcuff': { intensity: 10, duration: 800 },
+                'whip': { intensity: 20, duration: 300 },
+                'collar': { intensity: 12, duration: 1500 },
+                'blindfold': { intensity: 8, duration: 2000 },
+                'clamp': { intensity: 18, duration: 500 }
+            },
+            MAX_INTENSITY: 20,
+            MIN_INTENSITY: 0
+        };
+
+        // 玩具控制类
+        class ToyController {
+            constructor() {
+                this.isConnected = false;
+                this.init();
+            }
+
+            async init() {
+                if (window.appGallery && window.appGallery.getToyManager) {
+                    try {
+                        const toyManager = window.appGallery.getToyManager();
+                        this.isConnected = await toyManager.checkConnection();
+                        console.log('Toy connection status:', this.isConnected);
+
+                        toyManager.onConnectionChange((connected) => {
+                            this.isConnected = connected;
+                            console.log('Toy connection changed:', connected);
+                        });
+                    } catch (error) {
+                        console.error('Failed to initialize toy controller:', error);
+                    }
+                }
+            }
+
+            sendCommand(type) {
+                if (!this.isConnected) return;
+                
+                const pattern = TOY_CONFIG.PATTERNS[type];
+                if (!pattern) return;
+
+                try {
+                    const toyManager = window.appGallery.getToyManager();
+                    const command = {
+                        action: 'Vibrate',
+                        timeSec: pattern.duration / 1000,
+                        strength: pattern.intensity
+                    };
+                    
+                    toyManager.sendCommand(command);
+                    console.log('Sent toy command:', command);
+                } catch (error) {
+                    console.error('Failed to send toy command:', error);
+                }
+            }
+        }
+
+        // 游戏状态中添加当前角色文件夹和玩具控制器
         const GAME_STATE = {
             currentCharacterFolder: '', // 当前使用的角色文件夹
             board: [],
             score: 0,
             isAnimating: false,
-            selectedCandy: null
+            selectedCandy: null,
+            toyController: null  // 添加玩具控制器引用
         };
 
         // 游戏配置
@@ -332,6 +393,9 @@
          */
         async function initGame() {
             console.log('初始化游戏...');
+            
+            // 初始化玩具控制器
+            GAME_STATE.toyController = new ToyController();
             
             // 随机选择一个角色文件夹
             GAME_STATE.currentCharacterFolder = CONFIG.CHARACTER_FOLDERS[
