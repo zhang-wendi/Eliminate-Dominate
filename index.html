@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminate & Dominate</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            font-family: Arial, sans-serif;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 50px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, #ff3366 0%, #ff0066 100%);
+            border: none;
+            padding: 15px 40px;
+            font-size: 24px;
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.5);
+        }
+
+        .start-button:active {
+            transform: translateY(1px);
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 20px rgba(255, 51, 102, 0.6));
+            }
+        }
+
+        @keyframes shine {
+            from {
+                transform: rotate(45deg) translateX(-100%);
+            }
+            to {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+        /* 添加响应式设计 */
+        @media (max-width: 768px) {
+            .logo {
+                width: 90%;
+            }
+            
+            .start-button {
+                padding: 12px 30px;
+                font-size: 20px;
+            }
+
+            .copyright {
+                font-size: 10px;
+                padding: 8px;
+            }
+        }
+
+        /* 添加版权声明样式 */
+        .copyright {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-size: 12px;
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        .copyright a {
+            color: rgba(255, 51, 102, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .copyright a:hover {
+            color: rgba(255, 51, 102, 1);
+        }
+
+        /* Contact 按钮样式 */
+        .contact-button {
+            background: transparent;
+            border: 2px solid #ff3366;
+            padding: 10px 30px;
+            font-size: 18px;
+            color: #ff3366;
+            border-radius: 25px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-button:hover {
+            background: rgba(255, 51, 102, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 80%;
+            max-height: 80vh;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.3);
+            border: 2px solid rgba(255, 51, 102, 0.5);
+            text-align: center;
+            overflow-y: auto;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .modal-content h2 {
+            color: #ff3366;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+        }
+
+        .contact-text {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 16px;
+            padding: 0 15px;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.3);
+        }
+
+        .close-button {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: rotate(90deg);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 调整按钮间距 */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* 移动设备适配 */
+        @media (max-width: 768px) {
+            .modal-content {
+                max-width: 90%;
+                margin: 40px auto;
+                padding: 25px 20px;
+            }
+            
+            .modal-content h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .contact-text {
+                font-size: 14px;
+                margin-bottom: 20px;
+                padding: 0 10px;
+            }
+            
+            .close-button {
+                top: -30px;
+                right: 0;
+                font-size: 28px;
+            }
+        }
+
+        /* 较小屏幕适配 */
+        @media (max-height: 600px) {
+            .modal-content {
+                max-height: 85vh;
+                margin: 30px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen">
+        <img src="resource/img/logo.png" alt="Eliminate & Dominate" class="logo">
+        <div class="buttons-container">
+            <button class="start-button" onclick="startGame()">Start</button>
+            <button class="contact-button" onclick="showContact()">Contact</button>
+        </div>
+    </div>
+
+    <!-- 联系方式模态框 -->
+    <div id="contactModal" class="modal" onclick="hideContact(event)">
+        <div class="modal-content">
+            <span class="close-button" onclick="hideContact(event)">&times;</span>
+            <h2>Contact Dev</h2>
+            <p class="contact-text">
+                <!-- 欢迎加入群聊一起沟通，我可能不经常在线，上线会回复信息的 -->
+                <!-- <br><br> -->
+                Welcome to join the group chat. I may not be online frequently, but I will reply when I'm available.
+            </p>
+            <img src="resource/contact.jpg" alt="Contact Information">
+        </div>
+    </div>
+
+    <div class="copyright">
+        <!-- 本游戏所有内容均由 AI 生成。若发现任何侵权内容，请联系 <a href="mailto:your@email.com">管理员</a>，我们将立即处理。 -->
+        <!-- <br> -->
+        All content in this game is AI-generated. If any infringement is found, please contact us for immediate removal.
+    </div>
+
+    <script>
+        function startGame() {
+            // 跳转到游戏页面
+            window.location.href = 'main.html';
+        }
+
+        function showContact() {
+            document.getElementById('contactModal').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+
+        function hideContact(event) {
+            if (event.target.className === 'modal' || event.target.className === 'close-button') {
+                document.getElementById('contactModal').style.display = 'none';
+                document.body.style.overflow = 'auto'; // 恢复背景滚动
+            }
+        }
+    </script>
+</body>
+</html>
